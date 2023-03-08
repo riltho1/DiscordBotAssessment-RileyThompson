@@ -1,8 +1,9 @@
+import os
 import discord
 import random
 from discord.ext import commands
 
-TOKEN = "MTA4MDk2MDczMTUxMzYzNDg5OA.GYYrZO.blw___D4F7uyoFI_0SW1yU5qj0q_qY3nwuwccE"
+TOKEN = os.environ['TOKEN']
 
 intents = discord.Intents.default()
 intents.message_content = True
