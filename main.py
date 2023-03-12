@@ -11,6 +11,7 @@ client = commands.Bot(command_prefix = "!", intents = intents)
 
 user_hp = 20
 basic_attack = 10 
+heal = 10
 
 @client.event
 async def on_ready():
@@ -35,10 +36,18 @@ class Stats:
     other.hp -= damage
     return (self.attack, other.hp <= 0) #Damage, fatal
 
-  class Enemy(Stats):
-    def __init__(self,name,hp,max_hp,attack,defense):
-      super().__init__(self,name,hp,max_hp,attack,defense)
-      
-    
+class Character(Stats):# Users stats
+  def __init__(self, name, hp, max_hp, attack, defense):
+    super().__init__(name, hp, max_hp, attack, defense)
+
+class Enemy(Stats):#Enemy stats
+    def __init__(self, name, hp, max_hp, attack, defense):
+      super().__init__(name, max_hp, attack, defense)
+
+#Enemies
+class Zombie(Enemy):
+  def __init__(self):
+    super().__init__("Zombie",20,5,7)
+  
 
 client.run(TOKEN)
