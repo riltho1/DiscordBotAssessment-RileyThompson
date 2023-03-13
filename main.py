@@ -32,14 +32,15 @@ class rng:
 """
 
 class Stats():
-  def __init__(self,name,hp,max_hp,attack,defense): #Defining variables
+  #Defining variables
+  def __init__(self,name,hp,max_hp,attack,defense): 
     self.name = name
     self.hp = hp
     self.max_hp = max_hp
     self.attack = attack
     self.defense = defense
-
-  def user_attack(self,name,hp,max_hp,attack,defense):
+    
+  def user_attack(self): #Only needed self 
     damage = random.randint(1,10)
     print(damage)
 
@@ -62,18 +63,30 @@ class Character(Stats):# Users stats
 
 class Enemy(Stats):#Enemy stats
     def __init__(self, name, hp, max_hp, attack, defense):
-      super().__init__(name, max_hp, attack, defense)
+      super().__init__(name, hp, max_hp, attack, defense)
 
 #Enemies
 class Zombie(Enemy):
   def __init__(self):
-    super().__init__("Zombie",20,5,7)
+    super().__init__("Zombie",20,25,7,10)
   
 
-s = Stats("Zombie", 20, 5, 7, 10)
+@client.command(name = "start")
+async def start(ctx):
+  await ctx.channel.send("A zombie has appeared")
 
+#This shows the value of damage for each Character and enemy when the user inputs !stats it shows up in order on the console
+@client.command (name = "stats")
+async def stats(ctx):
+  player = Character("Bob", 20, 35, 10, 15)
+  zombie = Zombie()
+  player.user_attack()
+  zombie.user_attack()
 #Trying to test the user_attack function (errors)
 '''
+super(Zombie).user_attack("Zombie",20,25,7,10)
+s = Stats("Zombie",20,25,7,10)
+
 @client.command (name = "stats")
 async def stats(ctx,str):
   if str(str) == s.user_attack:
