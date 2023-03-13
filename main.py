@@ -70,5 +70,13 @@ class Zombie(Enemy):
     super().__init__("Zombie",20,5,7)
   
 
+s = Stats("Zombie", 20, 5, 7, 10)
 
+#Trying to test the user_attack function (errors)
+'''
+@client.command (name = "stats")
+async def stats(ctx,str):
+  if str(str) == s.user_attack:
+    await ctx.channel.send(Stats)
+'''
 client.run(TOKEN)
