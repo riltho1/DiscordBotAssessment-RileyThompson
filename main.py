@@ -44,6 +44,18 @@ class Stats():
     damage = random.randint(1,10)
     print(damage)
 
+@client.command("attack")
+async def attack(ctx):
+
+  def check_valid(m):
+    return ctx.author== m.author and m.content == "attack"
+
+  
+  while True:
+    await ctx.channel.send("You attack for")
+    await ctx.channel.send("The monster attacks")
+    msg = await client.wait_for("message", check = check_valid)
+
 #This seems a bit complex and unnessasary so I have decided to make it simpler above
 '''
   def fight(self,other):
