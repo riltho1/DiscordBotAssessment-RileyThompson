@@ -19,7 +19,7 @@ class Player:
     
 #Giving variables for stats
     self.attack = P_attack
-    self.s_attack= P_s_attack
+    #self.s_attack= P_s_attack
     self.hp = P_hp
     self.max_hp = P_max_hp
     self.heal = P_heal
@@ -41,14 +41,27 @@ class Player:
   def get_name(self):
     return self.name
 
-user = Player(20, 40, 75, 100, 15, "Phillip")
+def user_attack():
+  damage = random.randint(1,5)
+  #print(damage)
+  if damage == 1:
+    P_attack = 0
+  elif damage == 2:
+    P_attack = 5
+  elif damage == 3:
+    P_attack = 10
+  else:
+    P_attack = 20
+  print(P_attack)
+
+user = Player(user_attack(), 40, 75, 100, 15, "Phillip")
 
 #Enemy class containing enemy stats
 class Enemy:
   def __init__(self, E_attack, E_s_attack, E_hp, E_max_hp, E_heal, E_Name):
 #Giving variables for stats
     self.attack = E_attack
-    self.s_attack = E_s_attack
+    #self.s_attack = E_s_attack
     self.hp = E_hp
     self.max_hp = E_max_hp
     self.heal = E_heal
@@ -69,23 +82,38 @@ class Enemy:
 
   def get_name(self):
     return self.name
+
+def enemy_attack():
+  damage = random.randint(1,5)
+  #print(damage)
+  if damage == 1:
+    E_attack = 0
+  elif damage == 2:
+    E_attack = 5
+  elif damage == 3:
+    E_attack = 10
+  else:
+    E_attack = 20
+  print(E_attack)
     
-enemy = Enemy(15, 50, 75, 90, 15, "Zombie")
+enemy = Enemy(enemy_attack(), 50, 75, 90, 15, "Zombie")
 
 #Commands
 #In progress
 @client.command(name = "start")
 async def start(ctx):
-  await ctx.channel.send
+  await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal)")
 
 @client.command (name = "stats")
 async def stats(ctx):
   await ctx.channel.send(f"{user.get_name()} has {user.get_hp()} hp out of {user.get_max_hp()} hp")
-  await ctx.channel.send(f"{user.get_name()} has an attack force of {user.get_attack()}")
 
 #In progress
-@client.command (name = "attack")
-async def attack(ctx):
+
+#@client.command (name = "attack")
+#async def attack(ctx):
+  
+  
   
 
 client.run(TOKEN)
