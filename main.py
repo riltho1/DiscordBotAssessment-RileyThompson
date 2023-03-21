@@ -19,7 +19,7 @@ class Player:
     
 #Giving variables for stats
     self.attack = P_attack
-    #self.s_attack= P_s_attack
+    #self.s_attack= P_s_attack leaving for later
     self.hp = P_hp
     self.max_hp = P_max_hp
     self.heal = P_heal
@@ -83,9 +83,9 @@ class Enemy:
   def get_name(self):
     return self.name
 
+#Randomised attac value
 def enemy_attack():
   damage = random.randint(1,5)
-  #print(damage)
   if damage == 1:
     E_attack = 0
   elif damage == 2:
@@ -99,7 +99,6 @@ def enemy_attack():
 enemy = Enemy(enemy_attack(), 50, 75, 90, 15, "Zombie")
 
 #Commands
-#In progress
 @client.command(name = "start")
 async def start(ctx):
   await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal)")
@@ -109,11 +108,7 @@ async def stats(ctx):
   await ctx.channel.send(f"{user.get_name()} has {user.get_hp()} hp out of {user.get_max_hp()} hp")
 
 #In progress
-
 #@client.command (name = "attack")
 #async def attack(ctx):
   
-  
-  
-
 client.run(TOKEN)
