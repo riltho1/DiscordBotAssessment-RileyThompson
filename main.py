@@ -18,7 +18,7 @@ class Player:
   def __init__(self, P_attack, P_s_attack, P_hp, P_max_hp, P_heal, P_Name):
     
 #Giving variables for stats
-    self.attack = P_attack
+    self.attack_value = P_attack
     #self.s_attack= P_s_attack leaving for later
     self.hp = P_hp
     self.max_hp = P_max_hp
@@ -53,6 +53,8 @@ def user_attack():
   else:
     P_attack = 20
   print(P_attack)
+  Player.attack_value = P_attack
+  return P_attack
 
 user = Player(user_attack(), 40, 75, 100, 15, "Phillip")
 
@@ -60,7 +62,7 @@ user = Player(user_attack(), 40, 75, 100, 15, "Phillip")
 class Enemy:
   def __init__(self, E_attack, E_s_attack, E_hp, E_max_hp, E_heal, E_Name):
 #Giving variables for stats
-    self.attack = E_attack
+    self.attack_value = E_attack
     #self.s_attack = E_s_attack
     self.hp = E_hp
     self.max_hp = E_max_hp
@@ -87,14 +89,16 @@ class Enemy:
 def enemy_attack():
   damage = random.randint(1,5)
   if damage == 1:
-    E_attack = 0
+    E_attack = 4
   elif damage == 2:
-    E_attack = 5
+    E_attack = 6
   elif damage == 3:
-    E_attack = 10
+    E_attack = 8
   else:
-    E_attack = 20
+    E_attack = 10
   print(E_attack)
+  Enemy.attack_value = E_attack
+  return E_attack
     
 enemy = Enemy(enemy_attack(), 50, 75, 90, 15, "Zombie")
 
@@ -106,9 +110,23 @@ async def start(ctx):
 @client.command (name = "stats")
 async def stats(ctx):
   await ctx.channel.send(f"{user.get_name()} has {user.get_hp()} hp out of {user.get_max_hp()} hp")
+  
+@client.command (name = "attack")
+async def attack(ctx):
+  #Generates attack values
+  user_attack_value = user_attack()
+  #enemy_attack_value = enemy_attack()
+  #Asigns the value of the user to a damage variable
+  damage = user_attack_value
 
-#In progress
-#@client.command (name = "attack")
-#async def attack(ctx):
+  #Enemys HP calculation
+  enemy_hp = enemy.get_hp()
+  enemy_hp -= damage
+  enemy_hp = max(0, enemy_hp)
+  enemy.hp = enemy_hp
+
+  await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage {enemy.get_name()} has {enemy_hp} HP left.")
+
+
   
 client.run(TOKEN)
