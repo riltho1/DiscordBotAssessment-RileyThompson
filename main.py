@@ -115,18 +115,28 @@ async def stats(ctx):
 async def attack(ctx):
   #Generates attack values
   user_attack_value = user_attack()
-  #enemy_attack_value = enemy_attack()
   #Asigns the value of the user to a damage variable
   damage = user_attack_value
 
   #Enemys HP calculation
   enemy_hp = enemy.get_hp()
   enemy_hp -= damage
-  enemy_hp = max(0, enemy_hp)
+  #enemy_hp = max(0, enemy_hp)
   enemy.hp = enemy_hp
 
-  await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage {enemy.get_name()} has {enemy_hp} HP left.")
+  await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
 
+  #Enemy attack value
+  enemy_attack_value = enemy_attack()
+  damage = enemy_attack_value
+
+  #Users hp calculation
+  user_hp = user.get_hp()
+  user_hp -= damage
+  #user_hp = max(0, user_hp)
+  user.hp = user_hp
+
+  await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
 
   
 client.run(TOKEN)
