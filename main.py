@@ -126,6 +126,10 @@ async def attack(ctx):
 
   await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
 
+  if enemy_hp <= 0:
+    await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
+    return
+  
   #Enemy attack value
   enemy_attack_value = enemy_attack()
   damage = enemy_attack_value
@@ -138,5 +142,7 @@ async def attack(ctx):
 
   await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
 
+  if user_hp <= 0:
+    await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
   
 client.run(TOKEN)
