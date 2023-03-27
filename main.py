@@ -107,7 +107,6 @@ enemy = Enemy(enemy_attack(), 50, 75, 90, 15, "Zombie")
 def reset_game(): #Resets the hp of the user and enemy to default amount when called
   user.hp = 75
   enemy.hp = 75
-  print("Game has been reset type '!start' to begin")
   return user.hp, enemy.hp
 
 #Commands
@@ -129,24 +128,10 @@ async def attack(ctx):
   #Enemys HP calculation
   enemy_hp = enemy.get_hp()
   enemy_hp -= damage
-  #enemy_hp = max(0, enemy_hp)
   enemy.hp = enemy_hp
 
   await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
 
-  if enemy_hp <= 0:
-    await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
-    play_again = await ctx.channel.send(ctx, "Do you want to play again?(Yes/No)")
-    if play_again.lower() == "yes":
-      await ctx.channel.send("Restarting game...")
-      reset_game()
-    elif play_again.lower() == "no":
-      await ctx.channel.send("Thank you for playing")
-      return
-
-    
-    
-  
   #Enemy attack value
   enemy_attack_value = enemy_attack()
   damage = enemy_attack_value
@@ -154,20 +139,44 @@ async def attack(ctx):
   #Users hp calculation
   user_hp = user.get_hp()
   user_hp -= damage
-  #user_hp = max(0, user_hp)
   user.hp = user_hp
 
   await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
 
+
+  if enemy_hp <= 0:
+    await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
+    await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
+  elif user_hp <= 0:
+    await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
+    await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
+    
+  
+  #Lambda is used to check if authour is the same as origional author as well as if it is on the origional channel
+  response = await client.wait_for("message", check= lambda m: m.author == ctx.author and m.channel == ctx.channel)
+
+  if response.content.lower() == "yes":
+    await ctx.channel.send("Restarting game...")
+    await ctx.channel.send("Game has been reset type '!start' to begin")
+    reset_game()
+  elif response.content.lower() == "no":
+    await ctx.channel.send("Thank you for playing")
+    return
+
+  """
   if user_hp <= 0:
     await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
-    play_again = await ctx.channel.send(ctx, "Do you want to play again?(Yes/No)")
-    if play_again.lower() == "yes":
+    await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
+    response = await client.wait_for("message", check= lambda m: m.author == ctx.author and m.channel == ctx.channel)
+
+    
+    if response.content.lower() == "yes":
       await ctx.channel.send("Restarting game...")
       reset_game()
-    elif play_again == "no":
+    elif response.content.lower() == "no":
       await ctx.channel.send("Thank you for playing")
       return
+  """
 
       
   
