@@ -56,6 +56,7 @@ def user_attack():
   Player.attack_value = P_attack
   return P_attack
 
+#User profile
 user = Player(user_attack(), 40, 75, 100, 15, "Phillip")
 
 #Enemy class containing enemy stats
@@ -99,8 +100,15 @@ def enemy_attack():
   print(E_attack)
   Enemy.attack_value = E_attack
   return E_attack
-    
+
+#Enemy profile
 enemy = Enemy(enemy_attack(), 50, 75, 90, 15, "Zombie")
+
+def reset_game(): #Resets the hp of the user and enemy to default amount when called
+  user.hp = 75
+  enemy.hp = 75
+  print("Game has been reset type '!start' to begin")
+  return user.hp, enemy.hp
 
 #Commands
 @client.command(name = "start")
@@ -128,7 +136,16 @@ async def attack(ctx):
 
   if enemy_hp <= 0:
     await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
-    return
+    play_again = await ctx.channel.send(ctx, "Do you want to play again?(Yes/No)")
+    if play_again.lower() == "yes":
+      await ctx.channel.send("Restarting game...")
+      reset_game()
+    elif play_again.lower() == "no":
+      await ctx.channel.send("Thank you for playing")
+      return
+
+    
+    
   
   #Enemy attack value
   enemy_attack_value = enemy_attack()
@@ -144,5 +161,14 @@ async def attack(ctx):
 
   if user_hp <= 0:
     await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
+    play_again = await ctx.channel.send(ctx, "Do you want to play again?(Yes/No)")
+    if play_again.lower() == "yes":
+      await ctx.channel.send("Restarting game...")
+      reset_game()
+    elif play_again == "no":
+      await ctx.channel.send("Thank you for playing")
+      return
+
+      
   
 client.run(TOKEN)
