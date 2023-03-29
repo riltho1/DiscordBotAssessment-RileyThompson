@@ -43,7 +43,6 @@ class Player:
 
 def user_attack():
   damage = random.randint(1,5)
-  #print(damage)
   if damage == 1:
     P_attack = 0
   elif damage == 2:
@@ -56,6 +55,11 @@ def user_attack():
   Player.attack_value = P_attack
   return P_attack
 
+#Creates random hp value for the user to heal by if they input heal between the values 
+def user_heal():
+  heal_value = random.randint(5,10)
+  return heal_value
+  
 #User profile
 user = Player(user_attack(), 40, 75, 100, 15, "Phillip")
 
@@ -114,11 +118,28 @@ def reset_game(): #Resets the hp of the user and enemy to default amount when ca
 async def start(ctx):
   await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal)")
 
-@client.command (name = "stats")
+@client.command(name = "stats")
 async def stats(ctx):
   await ctx.channel.send(f"{user.get_name()} has {user.get_hp()} hp out of {user.get_max_hp()} hp")
+
+@client.command(name = "heal")
+async def heal(ctx):
+  #Health added to user hp
+  heal_value = user_heal()
+  user_hp = user.get_hp()
+  user_hp += heal_value
+
   
-@client.command (name = "attack")
+  #This makes it so the the players health cannot exceed the maximum
+  if user_hp > user.get_max_hp():
+    user_hp = user.get_max_hp()
+
+  #Updates attribute in class
+  user.hp = user_hp
+  
+  await ctx.channel.send(f"{user.get_name()} healed for {heal_value} HP and now has {user_hp} HP")
+  
+@client.command(name = "attack")
 async def attack(ctx):
   #Generates attack values
   user_attack_value = user_attack()
@@ -135,6 +156,7 @@ async def attack(ctx):
   #Enemy attack value
   enemy_attack_value = enemy_attack()
   damage = enemy_attack_value
+  
 
   #Users hp calculation
   user_hp = user.get_hp()
@@ -150,8 +172,6 @@ async def attack(ctx):
   elif user_hp <= 0:
     await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
     await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
-    
-  
   #Lambda is used to check if authour is the same as origional author as well as if it is on the origional channel
   response = await client.wait_for("message", check= lambda m: m.author == ctx.author and m.channel == ctx.channel)
 
@@ -162,22 +182,5 @@ async def attack(ctx):
   elif response.content.lower() == "no":
     await ctx.channel.send("Thank you for playing")
     return
-
-  """
-  if user_hp <= 0:
-    await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
-    await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
-    response = await client.wait_for("message", check= lambda m: m.author == ctx.author and m.channel == ctx.channel)
-
-    
-    if response.content.lower() == "yes":
-      await ctx.channel.send("Restarting game...")
-      reset_game()
-    elif response.content.lower() == "no":
-      await ctx.channel.send("Thank you for playing")
-      return
-  """
-
-      
   
 client.run(TOKEN)
