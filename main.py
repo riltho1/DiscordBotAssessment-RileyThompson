@@ -24,6 +24,7 @@ class Player:
     self.max_hp = P_max_hp
     self.heal = P_heal
     self.name = P_Name
+    self.heal_count = 0
 
   #Assinging the variables to User functions
   def get_attack(self):
@@ -58,6 +59,7 @@ def user_attack():
 #Creates random hp value for the user to heal by if they input heal between the values 
 def user_heal():
   heal_value = random.randint(5,10)
+  user.heal_count += 1
   return heal_value
   
 #User profile
@@ -124,6 +126,11 @@ async def stats(ctx):
 
 @client.command(name = "heal")
 async def heal(ctx):
+  #Checks is user is able to heal yet
+  if user.heal_count == 3:
+    await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count % 3} turns.")
+    return
+  
   #Health added to user hp
   heal_value = user_heal()
   user_hp = user.get_hp()
@@ -136,6 +143,7 @@ async def heal(ctx):
 
   #Updates attribute in class
   user.hp = user_hp
+  user.heal_count += 1
   
   await ctx.channel.send(f"{user.get_name()} healed for {heal_value} HP and now has {user_hp} HP")
   
@@ -184,3 +192,5 @@ async def attack(ctx):
     return
   
 client.run(TOKEN)
+
+#Need to fix the heal command so it only works every 3 turns
