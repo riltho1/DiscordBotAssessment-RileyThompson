@@ -27,21 +27,25 @@ class Player:
     self.heal_count = 0
 
   #Assinging the variables to User functions
-  def get_attack(self):
-    return self.attack
+#  def get_attack(self):  
+#   return self.attack
 
   def get_hp(self):
+    user.heal_count += 1
     return self.hp
 
   def get_max_hp(self):
+    user.heal_count += 1
     return self.max_hp
 
   def get_heal(self):
+    user.heal_count = 0
     return self.heal
 
   def get_name(self):
+    user.heal_count += 1
     return self.name
-
+    
 def user_attack():
   damage = random.randint(1,5)
   if damage == 1:
@@ -57,11 +61,12 @@ def user_attack():
   return P_attack
 
 #Creates random hp value for the user to heal by if they input heal between the values 
+
 def user_heal():
   heal_value = random.randint(5,10)
-  user.heal_count += 1
+  #user.heal_count += 1
   return heal_value
-  
+
 #User profile
 user = Player(user_attack(), 40, 75, 100, 15, "Phillip")
 
@@ -78,6 +83,7 @@ class Enemy:
 
 #Asigning the variables to Enemy functions
   def get_attack(self):
+    
     return self.attack
 
   def get_hp(self):
@@ -127,14 +133,16 @@ async def stats(ctx):
 @client.command(name = "heal")
 async def heal(ctx):
   #Checks is user is able to heal yet
-  if user.heal_count == 3:
-    await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count % 3} turns.")
+  if user.heal_count < 3:
+    await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count} turns.")
     return
   
   #Health added to user hp
   heal_value = user_heal()
+  #user.use_heal()
   user_hp = user.get_hp()
   user_hp += heal_value
+  
 
   
   #This makes it so the the players health cannot exceed the maximum
@@ -153,6 +161,7 @@ async def attack(ctx):
   user_attack_value = user_attack()
   #Asigns the value of the user to a damage variable
   damage = user_attack_value
+  user.heal_count += 1
 
   #Enemys HP calculation
   enemy_hp = enemy.get_hp()
