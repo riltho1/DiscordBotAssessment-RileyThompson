@@ -136,14 +136,13 @@ async def heal(ctx):
   if user.heal_count < 3:
     await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count} turns.")
     return
-  
+  else:
+    user.heal_count = 0
+    
   #Health added to user hp
   heal_value = user_heal()
-  #user.use_heal()
   user_hp = user.get_hp()
   user_hp += heal_value
-  
-
   
   #This makes it so the the players health cannot exceed the maximum
   if user_hp > user.get_max_hp():
@@ -154,6 +153,8 @@ async def heal(ctx):
   user.heal_count += 1
   
   await ctx.channel.send(f"{user.get_name()} healed for {heal_value} HP and now has {user_hp} HP")
+  #Reset to 0 after a succesful heal
+  user.heal_count = 0
   
 @client.command(name = "attack")
 async def attack(ctx):
@@ -173,7 +174,6 @@ async def attack(ctx):
   #Enemy attack value
   enemy_attack_value = enemy_attack()
   damage = enemy_attack_value
-  
 
   #Users hp calculation
   user_hp = user.get_hp()
@@ -181,7 +181,6 @@ async def attack(ctx):
   user.hp = user_hp
 
   await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
-
 
   if enemy_hp <= 0:
     await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
