@@ -27,9 +27,6 @@ class Player:
     self.heal_count = 0
 
   #Assinging the variables to User functions
-#  def get_attack(self):  
-#   return self.attack
-
   def get_hp(self):
     user.heal_count += 1
     return self.hp
@@ -43,7 +40,6 @@ class Player:
     return self.heal
 
   def get_name(self):
-    user.heal_count += 1
     return self.name
     
 def user_attack():
@@ -83,7 +79,6 @@ class Enemy:
 
 #Asigning the variables to Enemy functions
   def get_attack(self):
-    
     return self.attack
 
   def get_hp(self):
@@ -124,20 +119,34 @@ def reset_game(): #Resets the hp of the user and enemy to default amount when ca
 #Commands
 @client.command(name = "start")
 async def start(ctx):
+  """
+  
+  Makes the user begin the game
+  """
   await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal)")
 
 @client.command(name = "stats")
 async def stats(ctx):
+  """
+  
+  Shows the user how much hp the user has
+  """
   await ctx.channel.send(f"{user.get_name()} has {user.get_hp()} hp out of {user.get_max_hp()} hp")
 
 @client.command(name = "heal")
 async def heal(ctx):
+  """
+
+  Allows the user to heal every 3 attacks
+  """
   #Checks is user is able to heal yet
   if user.heal_count < 3:
     await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count} turns.")
+    print(f"User heal count: {user.heal_count}")
     return
   else:
     user.heal_count = 0
+    print(f"User heal count: {user.heal_count}")
     
   #Health added to user hp
   heal_value = user_heal()
@@ -158,11 +167,14 @@ async def heal(ctx):
   
 @client.command(name = "attack")
 async def attack(ctx):
+  """
+  
+  Allows the user to attack the enemy zombie
+  """
   #Generates attack values
   user_attack_value = user_attack()
   #Asigns the value of the user to a damage variable
   damage = user_attack_value
-  user.heal_count += 1
 
   #Enemys HP calculation
   enemy_hp = enemy.get_hp()
@@ -198,7 +210,5 @@ async def attack(ctx):
   elif response.content.lower() == "no":
     await ctx.channel.send("Thank you for playing")
     return
-  
-client.run(TOKEN)
 
-#Need to fix the heal command so it only works every 3 turns
+client.run(TOKEN)
