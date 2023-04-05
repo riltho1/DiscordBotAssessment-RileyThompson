@@ -139,6 +139,13 @@ async def heal(ctx):
 
   Allows the user to heal every 3 attacks
   """
+  if user.get_hp() <= 0:
+    await ctx.channel.send(f"{user.get_name()} can no longer heal because he is dead.")
+    
+  if enemy.get_hp() <= 0:
+    await ctx.channel.send(f"{user.get_name()} can no longer heal because the {enemy.get_name()} is dead.")
+    
+  
   #Checks is user is able to heal yet
   if user.heal_count < 3:
     await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count} turns.")
@@ -148,7 +155,7 @@ async def heal(ctx):
   else:
     user.heal_count = 0
     print(f"User heal count: {user.heal_count}")
-    
+
   #Health added to user hp
   heal_value = user_heal()
   user_hp = user.get_hp()
@@ -161,24 +168,43 @@ async def heal(ctx):
   #Updates attribute in class
   user.hp = user_hp
   user.heal_count += 1
+
   
   await ctx.channel.send(f"{user.get_name()} healed for {heal_value} HP and now has {user_hp} HP")
   #Reset to 0 after a succesful heal
   user.heal_count = 0
+"""
+  if enemy.get_hp() <= 0:
+    await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
+    await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
+  elif user.get_hp() <= 0:
+    await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
+    await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
+    #Lambda is used to check if authour is the same as origional author as well as if it is on the original channel
+  response = await client.wait_for("message", check= lambda m: m.author == ctx.author and m.channel == ctx.channel)
   
+  if response.content.lower() == "yes":
+    await ctx.channel.send("Restarting game...")
+    await ctx.channel.send("Game has been reset type '!start' to begin")
+    reset_game()
+  elif response.content.lower() == "no":
+    await ctx.channel.send("Thank you for playing")
+    return
+"""
 @client.command(name = "attack")
 async def attack(ctx):
   """
   
   Allows the user to attack the enemy zombie
   """
+  #Stops the command working if hp for user or enemy either reaches or goes below 0
   if user.get_hp() <= 0:
     await ctx.channel.send(f"{user.get_name()} has been defeated you can no longer attack.")
-    return
+    
     
   if enemy.get_hp() <= 0:
     await ctx.channel.send(f"The {enemy.get_name()} is already defeted you can no longer attack it.")
-    return
+    
     
   #Generates attack values
   user_attack_value = user_attack()
@@ -190,7 +216,8 @@ async def attack(ctx):
   enemy_hp -= damage
   enemy.hp = enemy_hp
 
-  await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
+  if user.get_hp() > 0 and enemy.get_hp() > 0:
+    await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
 
    
 
@@ -202,8 +229,8 @@ async def attack(ctx):
   user_hp = user.get_hp()
   user_hp -= damage
   user.hp = user_hp
-
-  await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
+  if user.get_hp() > 0 and enemy.get_hp() > 0:
+    await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
   
     
 
