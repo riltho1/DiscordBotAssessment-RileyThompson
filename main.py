@@ -142,6 +142,7 @@ async def heal(ctx):
   #Checks is user is able to heal yet
   if user.heal_count < 3:
     await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count} turns.")
+    #Shows heal_count in the console
     print(f"User heal count: {user.heal_count}")
     return
   else:
@@ -171,6 +172,14 @@ async def attack(ctx):
   
   Allows the user to attack the enemy zombie
   """
+  if user.get_hp() <= 0:
+    await ctx.channel.send(f"{user.get_name()} has been defeated you can no longer attack.")
+    return
+    
+  if enemy.get_hp() <= 0:
+    await ctx.channel.send(f"The {enemy.get_name()} is already defeted you can no longer attack it.")
+    return
+    
   #Generates attack values
   user_attack_value = user_attack()
   #Asigns the value of the user to a damage variable
@@ -183,6 +192,8 @@ async def attack(ctx):
 
   await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
 
+   
+
   #Enemy attack value
   enemy_attack_value = enemy_attack()
   damage = enemy_attack_value
@@ -193,6 +204,8 @@ async def attack(ctx):
   user.hp = user_hp
 
   await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
+  
+    
 
   if enemy_hp <= 0:
     await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
@@ -200,9 +213,9 @@ async def attack(ctx):
   elif user_hp <= 0:
     await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
     await ctx.channel.send("Do you want to play again?(Yes/No) (Just text, no !)")
-  #Lambda is used to check if authour is the same as origional author as well as if it is on the origional channel
+    #Lambda is used to check if authour is the same as origional author as well as if it is on the original channel
   response = await client.wait_for("message", check= lambda m: m.author == ctx.author and m.channel == ctx.channel)
-
+  
   if response.content.lower() == "yes":
     await ctx.channel.send("Restarting game...")
     await ctx.channel.send("Game has been reset type '!start' to begin")
