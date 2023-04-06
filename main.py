@@ -57,7 +57,6 @@ def user_attack():
 
 def user_heal():
   heal_value = random.randint(5,10)
-  #user.heal_count += 1
   return heal_value
 
 #User profile
@@ -119,7 +118,7 @@ async def start(ctx):
   
   Makes the user begin the game
   """
-  await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal)")
+  await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal) (Type !help for more information)")
 
 @client.command(name = "stats")
 async def stats(ctx):
@@ -134,6 +133,7 @@ async def heal(ctx):
   """
 
   Allows the user to heal every 3 attacks
+  Enemy will not attack you during this time
   """
   if user.get_hp() <= 0:
     await ctx.channel.send(f"{user.get_name()} can no longer heal because he is dead.")
@@ -174,43 +174,31 @@ async def attack(ctx):
   """
   
   Allows the user to attack the enemy zombie
+  The zombie will attack you back
   """
-  #Stops the command working if hp for user or enemy either reaches or goes below 0
-  if user.get_hp() <= 0:
-    await ctx.channel.send(f"{user.get_name()} has been defeated you can no longer attack.")
-    
-    
-  if enemy.get_hp() <= 0:
-    await ctx.channel.send(f"The {enemy.get_name()} is already defeted you can no longer attack it.")
-    
-    
   #Generates attack values
   user_attack_value = user_attack()
   #Asigns the value of the user to a damage variable
-  damage = user_attack_value
+  user_damage = user_attack_value
+  #Enemy attack value
+  enemy_attack_value = enemy_attack()
+  enemy_damage = enemy_attack_value
 
   #Enemys HP calculation
   enemy_hp = enemy.get_hp()
-  enemy_hp -= damage
+  enemy_hp -= user_damage
   enemy.hp = enemy_hp
-
-  if user.get_hp() > 0 and enemy.get_hp() > 0:
-    await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
-    user.heal_count += 1
-
-   
-
-  #Enemy attack value
-  enemy_attack_value = enemy_attack()
-  damage = enemy_attack_value
-
   #Users hp calculation
   user_hp = user.get_hp()
-  user_hp -= damage
+  user_hp -= enemy_damage
   user.hp = user_hp
-  if user.get_hp() > 0 and enemy.get_hp() > 0:
-    await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
 
+  if user.get_hp() > 0 and enemy.get_hp() > 0:
+    await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {user_damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
+    await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {enemy_damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
+    user.heal_count += 1
+    
+  #This causes the game to reset after either the user or enemy dies
   if enemy_hp <= 0:
     await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
     await ctx.channel.send("Restarting the game...")
