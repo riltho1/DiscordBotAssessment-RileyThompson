@@ -197,12 +197,14 @@ async def attack(ctx):
     await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
     await ctx.channel.send("Restarting the game...")
     await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal) (Type !help for more information)")
+    user.heal_count = 0
     reset_game()
     return
   elif user_hp <= 0:
     await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
     await ctx.channel.send("Restarting the game...")
     await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal) (Type !help for more information)")
+    user.heal_count = 0
     reset_game()
     return
 
