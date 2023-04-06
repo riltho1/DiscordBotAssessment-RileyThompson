@@ -17,7 +17,7 @@ async def on_ready():
 
 #User class containing player stats
 class Player:
-  def __init__(self, P_attack, P_s_attack, P_hp, P_max_hp, P_heal, P_Name):
+  def __init__(self, P_attack, P_hp, P_max_hp, P_heal, P_Name):
     
 #Giving variables for stats
     self.attack_value = P_attack
@@ -62,11 +62,11 @@ def user_heal():
   return heal_value
 
 #User profile
-user = Player(user_attack(), 40, 75, 100, 15, "Phillip")
+user = Player(user_attack(), 75, 100, 15, "Phillip")
 
 #Enemy class containing enemy stats
 class Enemy:
-  def __init__(self, E_attack, E_s_attack, E_hp, E_max_hp, E_heal, E_Name):
+  def __init__(self, E_attack, E_hp, E_max_hp, E_heal, E_Name):
 #Giving variables for stats
     self.attack_value = E_attack
     self.hp = E_hp
@@ -106,7 +106,7 @@ def enemy_attack():
   return E_attack
 
 #Enemy profile
-enemy = Enemy(enemy_attack(), 50, 75, 90, 15, "Zombie")
+enemy = Enemy(enemy_attack(), 75, 90, 15, "Zombie")
 
 def reset_game(): #Resets the hp of the user and enemy to default amount when called
   user.hp = 75
@@ -129,16 +129,10 @@ async def heal(ctx):
   Allows the user to heal every 3 attacks
   Enemy will not attack you during this time
   """
-  if user.get_hp() <= 0:
-    await ctx.channel.send(f"{user.get_name()} can no longer heal because he is dead.")
-    
-  if enemy.get_hp() <= 0:
-    await ctx.channel.send(f"{user.get_name()} can no longer heal because the {enemy.get_name()} is dead.")
-    
   #Checks is user is able to heal yet
   if user.heal_count < 3:
     await ctx.channel.send(f"You are not able heal yet try again in {3 - user.heal_count} turns.")
-    #Shows heal_count in the console
+  #Shows heal_count in the console
     print(f"User heal count: {user.heal_count}")
     return
   else:
@@ -187,6 +181,7 @@ async def attack(ctx):
   user_hp -= enemy_damage
   user.hp = user_hp
 
+  #Prints how much damage is done by either user or enemy and shows their current hp
   if user.get_hp() > 0 and enemy.get_hp() > 0:
     await ctx.channel.send(f"{user.get_name()} attacks {enemy.get_name()} for {user_damage} damage, {enemy.get_name()} has {enemy_hp} HP left.")
     await ctx.channel.send(f"{enemy.get_name()} attacks you back for {user.get_name()} for {enemy_damage} damage, {user.get_name()} now has {user_hp} HP remaining.")
