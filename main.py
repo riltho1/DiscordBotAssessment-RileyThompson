@@ -12,6 +12,8 @@ client = commands.Bot(command_prefix = "!", intents = intents)
 @client.event
 async def on_ready():
   print(f"{client.user} has connected to discord")
+  channel = client.get_channel(1082070053299683440)
+  await channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal) (Type !help for more information)")
 
 #User class containing player stats
 class Player:
@@ -112,14 +114,6 @@ def reset_game(): #Resets the hp of the user and enemy to default amount when ca
   return user.hp, enemy.hp
 
 #Commands
-@client.command(name = "start")
-async def start(ctx):
-  """
-  
-  Makes the user begin the game
-  """
-  await ctx.channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal) (Type !help for more information)")
-
 @client.command(name = "stats")
 async def stats(ctx):
   """
@@ -202,11 +196,13 @@ async def attack(ctx):
   if enemy_hp <= 0:
     await ctx.channel.send(f"{enemy.get_name()} has been eliminated, {user.get_name()} wins.")
     await ctx.channel.send("Restarting the game...")
+    await channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal) (Type !help for more information)")
     reset_game()
     return
   elif user_hp <= 0:
     await ctx.channel.send(f"{user.get_name()} has been defeated by the {enemy.get_name()}, Game over!")
     await ctx.channel.send("Restarting the game...")
+    await channel.send(f"You encounter a {enemy.get_name()}, what will you do (Attack) (Heal) (Type !help for more information)")
     reset_game()
     return
 
